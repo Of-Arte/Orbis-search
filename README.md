@@ -1,4 +1,4 @@
-# Orbis-Search
+# Orbis Search
 
 **Standalone Hybrid Search MCP** - Auto-optimized search with 200x speedup for symbols.
 
@@ -9,6 +9,17 @@
 | **Keyword Search** | Exact symbols (`UserModel`, `calculate_tax`) | ~1ms |
 | **Semantic Search** | Concepts ("authentication logic", "error handling") | ~200-300ms |
 | **Auto-Pilot Mode** | Detects query type and optimizes automatically | Smart |
+
+## Suggested Use Cases
+*   **Privacy-First Dev**: Use `provider="local"` for fully offline, air-gapped semantic search.
+*   **IDE Context Enhancement**: Provide real-time codebase context to MCP-compatible LLMs (Antigravity, Cursor, etc.).
+*   **Legacy Code Discovery**: Quickly find implementation patterns ("How do we handle OAuth?") in unfamiliar repositories.
+*   **Large-Scale Symbol Jump**: Instantly find exact matches (~1ms) across projects where `grep` is too slow or too "noisy."
+
+## Limitations
+*   **Workspace Level**: Designed for individual project repositories. It is **not** a drive-wide desktop search engine.
+*   **Memory Bound**: RAM usage scales linearly with the number of indexed chunks. High-end repositories (1M+ lines) may require significant memory.
+
 
 ## Installation
 
@@ -215,16 +226,6 @@ orbis_search/
 *   **Lazy Content Loading**: To minimize footprint, Orbis-Search does **not** store full source code in the cache. It stores metadata and hashes, reading the actual file from disk only when a search result is generated.
 *   **Binary Serialization**: Uses `pickle` for the index to ensure 10-50x faster load times compared to JSON.
 
-## Suggested Use Cases
-*   **Privacy-First Dev**: Use `provider="local"` for fully offline, air-gapped semantic search.
-*   **IDE Context Enhancement**: Provide real-time codebase context to MCP-compatible LLMs (Antigravity, Cursor, etc.).
-*   **Legacy Code Discovery**: Quickly find implementation patterns ("How do we handle OAuth?") in unfamiliar repositories.
-*   **Large-Scale Symbol Jump**: Instantly find exact matches (~1ms) across projects where `grep` is too slow or too "noisy."
-
-## Limitations
-*   **Workspace Level**: Designed for individual project repositories. It is **not** a drive-wide desktop search engine.
-*   **Memory Bound**: RAM usage scales linearly with the number of indexed chunks. High-end repositories (1M+ lines) may require significant memory.
-
 ## Development
 
 ```powershell
@@ -237,15 +238,6 @@ pytest tests/ -v
 # Run specific test
 pytest tests/test_search_engine.py::TestHybridSearch -v
 ```
-
-## Comparison: Orbis-Search vs Swarm MCP
-
-| Aspect | Orbis-Search | Swarm MCP |
-|--------|--------------|-----------|
-| Focus | Pure search | Full orchestrator |
-| Dependencies | Minimal (3 core) | Heavy (30+ packages) |
-| Default Provider | Local (free) | Auto (tries cloud first) |
-| Use Case | Code discovery | Autonomous dev workflows |
 
 ## License
 
