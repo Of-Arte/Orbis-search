@@ -1,0 +1,10 @@
+# Core dependencies
+fastmcp>=2.0.0
+pydantic>=2.9.0
+
+# Local embeddings (default)
+sentence-transformers>=2.2.0
+
+# Optional: Cloud embedding providers
+# google-generativeai>=0.3.0
+# openai>=1.0.0

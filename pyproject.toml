@@ -1,0 +1,48 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "orbis-search"
+version = "1.0.0"
+description = "Standalone Hybrid Search MCP - Auto-optimized search with 200x speedup for symbols"
+readme = "README.md"
+requires-python = ">=3.11"
+license = {text = "MIT"}
+authors = [
+    {name = "Orbis Team"}
+]
+dependencies = [
+    "fastmcp>=2.0.0",
+    "pydantic>=2.9.0",
+]
+
+[project.optional-dependencies]
+# Local embeddings (default, free, offline)
+local = [
+    "sentence-transformers>=2.2.0",
+]
+# Cloud embedding providers (require API keys)
+gemini = [
+    "google-generativeai>=0.3.0",
+]
+openai = [
+    "openai>=1.0.0",
+]
+# All providers
+all = [
+    "sentence-transformers>=2.2.0",
+    "google-generativeai>=0.3.0",
+    "openai>=1.0.0",
+]
+dev = [
+    "pytest>=8.3.0",
+    "pytest-asyncio>=0.23.0",
+]
+
+[project.scripts]
+orbis-search = "orbis_search.server:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["orbis_search*"]
