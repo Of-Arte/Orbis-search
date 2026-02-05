@@ -1,6 +1,15 @@
 # Orbis Search
 
-**Standalone Hybrid Search MCP** - Auto-optimized search with 200x speedup for symbols.
+Orbis Search is a lightweight, privacy first semantic code search engine designed for developers who need intelligent codebase exploration without the complexity or cost of cloud-based solutions. Built as a Model Context Protocol (MCP) server, it seamlessly integrates with AI-powered development tools like Antigravity, Claude Desktop, and Cursor to provide real-time code context.
+
+Unlike traditional search tools that rely on exact string matching or expensive cloud APIs, Orbis Search combines **local semantic embeddings** with **keyword optimization** to deliver both conceptual understanding ("How do we handle authentication?") and lightning-fast symbol lookups (`UserModel`, `calculate_tax`). The auto-pilot mode intelligently detects query patterns and routes them to the optimal search strategy giving you sub-millisecond performance for symbols and rich semantic results for exploratory queries.
+
+**Key Benefits:**
+- **Privacy-First**: Fully offline local embeddings, no data leaves your machine
+- **Zero Cost**: Free forever with local provider, no API keys required
+- **Smart Performance**: Auto detects symbols for 200x faster lookups
+- **Minimal Footprint**: 98% smaller cache than JSON-based alternatives
+- **MCP Native**: Drop-in integration with modern AI development tools
 
 ## Features
 
