@@ -2,11 +2,11 @@
 
 Orbis Search is a lightweight, privacy-first semantic code search MCP server that gives AI coding agents and developers instant, structured access to any codebase — no cloud required.
 
-Built as a [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) server, Orbis integrates directly with AI-powered tools like Claude Desktop, Cursor, and Antigravity to provide real-time code context on demand.
+Built as a [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) server, Orbis integrates directly with AI-powered tools like Claude Code, Codex, and Antigravity to provide real-time code context on demand.
 
 ## The Problem: Agents Start Blind
 
-Every time a coding agent (Claude, Cursor, Copilot, etc.) starts a new session, **it has zero memory of your codebase**. It can't remember where `UserModel` is defined, how authentication is wired together, or which module owns a given piece of logic. Without grounding, agents hallucinate file paths, duplicate existing code, and require you to manually paste context into every conversation.
+Every time a coding agent (Claude Code, Codex, Antigravity, etc.) starts a new session, **it has zero memory of your codebase**. It can't remember where `UserModel` is defined, how authentication is wired together, or which module owns a given piece of logic. Without grounding, agents hallucinate file paths, duplicate existing code, and require you to manually paste context into every conversation.
 
 Orbis Search solves this by acting as a persistent, queryable memory layer for your project:
 
@@ -36,9 +36,9 @@ Instead of starting blind, the agent searches the indexed codebase and gets prec
 
 ## Use Cases
 
-* **AI Coding Agent Context**: Give agents like Claude or Cursor a live map of your repo. Agents call `search_codebase()` at session start or on demand to ground themselves in your actual code — eliminating hallucinated paths and duplicate implementations.
+* **AI Coding Agent Context**: Give agents like Claude Code, Codex, or Antigravity a live map of your repo. Agents call `search_codebase()` at session start or on demand to ground themselves in your actual code — eliminating hallucinated paths and duplicate implementations.
 * **Legacy Code Discovery**: Quickly find implementation patterns ("How do we handle OAuth?") in unfamiliar repositories you've inherited or just cloned.
-* **IDE Context Enhancement**: Provide real-time codebase context to MCP-compatible LLMs (Antigravity, Cursor, etc.) without manual copy-pasting.
+* **IDE Context Enhancement**: Provide real-time codebase context to MCP-compatible LLMs (Antigravity, Codex, etc.) without manual copy-pasting.
 * **Privacy-First Dev**: Use `provider="local"` for fully offline, air-gapped semantic search — nothing hits external APIs.
 * **Large-Scale Symbol Jump**: Instantly find exact matches (~1ms) across projects where `grep` is too slow or too "noisy."
 
@@ -64,13 +64,13 @@ pip install -e ".[local]"
 pip install -e ".[all]"  # Includes Gemini, OpenAI, Local
 ```
 
-## MCP Configuration (Antigravity / Claude Desktop)
+## MCP Configuration (Antigravity / Claude Code)
 
-To use Orbis-search with MCP-compatible IDEs like Antigravity or Claude Desktop, add this to your MCP config file:
+To use Orbis-search with MCP-compatible tools like Antigravity or Claude Code, add this to your MCP config file:
 
 **Location:**
 - Antigravity: `~/.gemini/antigravity/mcp_config.json` (or `%USERPROFILE%\.gemini\antigravity\mcp_config.json` on Windows)
-- Claude Desktop: `~/Library/Application Support/Claude/claude_desktop_config.json` (Mac) or `%APPDATA%\Claude\claude_desktop_config.json` (Windows)
+- Claude Code: `~/.claude/claude_code_config.json` (Mac/Linux) or `%APPDATA%\Claude\claude_code_config.json` (Windows)
 
 **Configuration:**
 ```json
