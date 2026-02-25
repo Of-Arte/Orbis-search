@@ -1,13 +1,28 @@
 # Orbis Search
 
-Orbis Search is a lightweight, privacy first semantic code search engine designed for developers who need intelligent codebase exploration without the complexity or cost of cloud-based solutions. Built as a Model Context Protocol (MCP) server, it seamlessly integrates with AI-powered development tools like Antigravity, Claude Desktop, and Cursor to provide real-time code context.
+Orbis Search is a lightweight, privacy-first semantic code search MCP server that gives AI coding agents and developers instant, structured access to any codebase — no cloud required.
 
-Unlike traditional search tools that rely on exact string matching or expensive cloud APIs, Orbis Search combines **local semantic embeddings** with **keyword optimization** to deliver both conceptual understanding ("How do we handle authentication?") and lightning-fast symbol lookups (`UserModel`, `calculate_tax`). The auto-pilot mode intelligently detects query patterns and routes them to the optimal search strategy giving you sub-millisecond performance for symbols and rich semantic results for exploratory queries.
+Built as a [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) server, Orbis integrates directly with AI-powered tools like Claude Desktop, Cursor, and Antigravity to provide real-time code context on demand.
 
-**Key Benefits:**
+## The Problem: Agents Start Blind
+
+Every time a coding agent (Claude, Cursor, Copilot, etc.) starts a new session, **it has zero memory of your codebase**. It can't remember where `UserModel` is defined, how authentication is wired together, or which module owns a given piece of logic. Without grounding, agents hallucinate file paths, duplicate existing code, and require you to manually paste context into every conversation.
+
+Orbis Search solves this by acting as a persistent, queryable memory layer for your project:
+
+```
+Agent: "Where is the payment processing logic?"
+Orbis: → src/payments/processor.py (lines 42-89), src/api/checkout.py (lines 12-31)
+```
+
+Instead of starting blind, the agent searches the indexed codebase and gets precise, relevant file chunks — in under 300ms.
+
+## Key Benefits
+
+- **Agent-Ready**: Gives coding agents codebase memory across sessions — no more starting from scratch
 - **Privacy-First**: Fully offline local embeddings, no data leaves your machine
 - **Zero Cost**: Free forever with local provider, no API keys required
-- **Smart Performance**: Auto detects symbols for 200x faster lookups
+- **Smart Performance**: Auto-detects symbols for 200x faster lookups
 - **Minimal Footprint**: 98% smaller cache than JSON-based alternatives
 - **MCP Native**: Drop-in integration with modern AI development tools
 
@@ -19,16 +34,18 @@ Unlike traditional search tools that rely on exact string matching or expensive 
 | **Semantic Search** | Concepts ("authentication logic", "error handling") | ~200-300ms |
 | **Auto-Pilot Mode** | Detects query type and optimizes automatically | Smart |
 
-## Suggested Use Cases
-*   **Privacy-First Dev**: Use `provider="local"` for fully offline, air-gapped semantic search.
-*   **IDE Context Enhancement**: Provide real-time codebase context to MCP-compatible LLMs (Antigravity, Cursor, etc.).
-*   **Legacy Code Discovery**: Quickly find implementation patterns ("How do we handle OAuth?") in unfamiliar repositories.
-*   **Large-Scale Symbol Jump**: Instantly find exact matches (~1ms) across projects where `grep` is too slow or too "noisy."
+## Use Cases
+
+* **AI Coding Agent Context**: Give agents like Claude or Cursor a live map of your repo. Agents call `search_codebase()` at session start or on demand to ground themselves in your actual code — eliminating hallucinated paths and duplicate implementations.
+* **Legacy Code Discovery**: Quickly find implementation patterns ("How do we handle OAuth?") in unfamiliar repositories you've inherited or just cloned.
+* **IDE Context Enhancement**: Provide real-time codebase context to MCP-compatible LLMs (Antigravity, Cursor, etc.) without manual copy-pasting.
+* **Privacy-First Dev**: Use `provider="local"` for fully offline, air-gapped semantic search — nothing hits external APIs.
+* **Large-Scale Symbol Jump**: Instantly find exact matches (~1ms) across projects where `grep` is too slow or too "noisy."
 
 ## Limitations
-*   **Workspace Level**: Designed for individual project repositories. It is **not** a drive-wide desktop search engine.
-*   **Memory Bound**: RAM usage scales linearly with the number of indexed chunks. High-end repositories (1M+ lines) may require significant memory.
 
+* **Workspace Level**: Designed for individual project repositories. It is **not** a drive-wide desktop search engine.
+* **Memory Bound**: RAM usage scales linearly with the number of indexed chunks. High-end repositories (1M+ lines) may require significant memory.
 
 ## Installation
 
@@ -46,7 +63,6 @@ pip install -e ".[local]"
 # OR install with cloud providers (optional)
 pip install -e ".[all]"  # Includes Gemini, OpenAI, Local
 ```
-
 
 ## MCP Configuration (Antigravity / Claude Desktop)
 
@@ -163,7 +179,16 @@ Check server status and indexer state.
 
 ## Examples
 
-### Example 1: Symbol Lookup (Fast)
+### Example 1: Agent Orientation at Session Start
+
+```python
+# Agent calls this at the start of a new session to orient itself
+search_codebase("entry point main application startup")
+search_codebase("database models schema")
+search_codebase("API routes endpoints")
+```
+
+### Example 2: Symbol Lookup (Fast)
 
 ```python
 # Auto-pilot detects symbol pattern → keyword search (~1ms)
@@ -172,7 +197,7 @@ search_codebase("authenticate()")
 search_codebase("MAX_RETRIES")
 ```
 
-### Example 2: Conceptual Search
+### Example 3: Conceptual Search
 
 ```python
 # Semantic search finds related concepts
@@ -181,7 +206,7 @@ search_codebase("error handling patterns")
 search_codebase("user authentication flow")
 ```
 
-### Example 3: Mixed Workflow
+### Example 4: Mixed Workflow
 
 ```python
 # 1. Quick symbol check
@@ -220,8 +245,8 @@ indexer = CodebaseIndexer(config)
 
 ```
 orbis_search/
-├── search_engine.py    # Core: Indexer, HybridSearch, Providers
-└── server.py           # MCP: Tools and auto-pilot logic
+├── search_engine.py  # Core: Indexer, HybridSearch, Providers
+└── server.py         # MCP: Tools and auto-pilot logic
 ```
 
 **Key Components:**
@@ -231,9 +256,10 @@ orbis_search/
 - `GeminiEmbedding` / `OpenAIEmbedding` - Cloud providers
 
 ### Technical Constraints & Scaling
-*   **In-Memory Retrieval**: The server loads the entire index (`index.bin`) into RAM. While keyword lookups are O(1), semantic searches are O(N) where N is the number of chunks.
-*   **Lazy Content Loading**: To minimize footprint, Orbis-Search does **not** store full source code in the cache. It stores metadata and hashes, reading the actual file from disk only when a search result is generated.
-*   **Binary Serialization**: Uses `pickle` for the index to ensure 10-50x faster load times compared to JSON.
+
+* **In-Memory Retrieval**: The server loads the entire index (`index.bin`) into RAM. While keyword lookups are O(1), semantic searches are O(N) where N is the number of chunks.
+* **Lazy Content Loading**: To minimize footprint, Orbis-Search does **not** store full source code in the cache. It stores metadata and hashes, reading the actual file from disk only when a search result is generated.
+* **Binary Serialization**: Uses `pickle` for the index to ensure 10-50x faster load times compared to JSON.
 
 ## Development
 
