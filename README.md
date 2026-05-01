@@ -6,7 +6,7 @@ Built as a [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) serv
 
 ## The Problem: Agents Start Blind
 
-Every time a coding agent (Claude Code, Codex, Antigravity, etc.) starts a new session, **it has zero memory of your codebase**. It can't remember where `UserModel` is defined, how authentication is wired together, or which module owns a given piece of logic. Without grounding, agents hallucinate file paths, duplicate existing code, and require you to manually paste context into every conversation.
+Every time a coding agent starts a new session, **it has zero memory of your codebase**. It can't remember where `UserModel` is defined, how authentication is wired together, or which module owns a given piece of logic. Without grounding, agents hallucinate file paths, duplicate existing code, and require you to manually paste context into every conversation.
 
 Orbis Search solves this by acting as a persistent, queryable memory layer for your project:
 
