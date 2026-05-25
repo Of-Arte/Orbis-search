@@ -4,13 +4,9 @@ Orbis Search is a lightweight, semantic code search MCP server that gives AI cod
 
 ## Key Benefits
 
-- **Agent-Ready**: Gives coding agents codebase memory across sessions — no more starting from scratch
-- **Privacy-First**: Fully offline local embeddings, no data leaves your machine
 - **Zero Cost**: Free forever with local provider, no API keys required
 - **Smart Performance**: Auto-detects symbols for 200x faster lookups
 - **Minimal Footprint**: 98% smaller cache than JSON-based alternatives
-- **MCP Native**: Drop-in integration with modern AI development tools
-
 ## Features
 
 | Feature | Description | Speed |
@@ -20,11 +16,9 @@ Orbis Search is a lightweight, semantic code search MCP server that gives AI cod
 | **Auto-Pilot Mode** | Detects query type and optimizes automatically | Smart |
 
 ## Use Cases
-
-* **AI Coding Agent Context**: Give agents like Claude Code, Codex, or Antigravity a live map of your repo. Agents call `search_codebase()` at session start or on demand to ground themselves in your actual code — eliminating hallucinated paths and duplicate implementations.
 * **Legacy Code Discovery**: Quickly find implementation patterns ("How do we handle OAuth?") in unfamiliar repositories you've inherited or just cloned.
-* **IDE Context Enhancement**: Provide real-time codebase context to MCP-compatible LLMs (Antigravity, Codex, etc.) without manual copy-pasting.
-* **Privacy-First Dev**: Use `provider="local"` for fully offline, air-gapped semantic search — nothing hits external APIs.
+* **IDE Context Enhancement**: Provide real-time codebase context to MCP-compatible LLMs (Antigravity, Codex, etc.).
+* **Privacy-First Dev**: Use `provider="local"` for fully offline, air-gapped semantic search.
 * **Large-Scale Symbol Jump**: Instantly find exact matches (~1ms) across projects where `grep` is too slow or too "noisy."
 
 ## Limitations
