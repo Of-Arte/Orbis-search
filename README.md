@@ -30,8 +30,6 @@ pip install -e ".[all]"  # Includes Gemini, OpenAI, Local
 ## MCP Configuration (Antigravity / Claude Code)
 
 To use Orbis-search with MCP-compatible tools like Antigravity or Claude Code, add this to your MCP config file:
-
-**Location:**
 - Antigravity: `~/.gemini/antigravity/mcp_config.json` (or `%USERPROFILE%\.gemini\antigravity\mcp_config.json` on Windows)
 - Claude Code: `~/.claude/claude_code_config.json` (Mac/Linux) or `%APPDATA%\Claude\claude_code_config.json` (Windows)
 
