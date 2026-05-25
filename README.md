@@ -1,21 +1,6 @@
 # Orbis Search
 
-Orbis Search is a lightweight, privacy-first semantic code search MCP server that gives AI coding agents and developers instant, structured access to any codebase — no cloud required.
-
-Built as a [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) server, Orbis integrates directly with AI-powered tools like Claude Code, Codex, and Antigravity to provide real-time code context on demand.
-
-## The Problem: Agents Start Blind
-
-Every time a coding agent starts a new session, **it has zero memory of your codebase**. It can't remember where `UserModel` is defined, how authentication is wired together, or which module owns a given piece of logic. Without grounding, agents hallucinate file paths, duplicate existing code, and require you to manually paste context into every conversation.
-
-Orbis Search solves this by acting as a persistent, queryable memory layer for your project:
-
-```
-Agent: "Where is the payment processing logic?"
-Orbis: → src/payments/processor.py (lines 42-89), src/api/checkout.py (lines 12-31)
-```
-
-Instead of starting blind, the agent searches the indexed codebase and gets precise, relevant file chunks — in under 300ms.
+Orbis Search is a lightweight, semantic code search MCP server that gives AI coding agents and developers instant, structured access to any codebase.
 
 ## Key Benefits
 
