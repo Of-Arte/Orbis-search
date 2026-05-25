@@ -2,29 +2,13 @@
 
 Orbis Search is a lightweight, semantic code search MCP server that gives AI coding agents and developers instant, structured access to any codebase.
 
-## Key Benefits
-
-- **Zero Cost**: Free forever with local provider, no API keys required
-- **Smart Performance**: Auto-detects symbols for 200x faster lookups
-- **Minimal Footprint**: 98% smaller cache than JSON-based alternatives
 ## Features
 
 | Feature | Description | Speed |
 |---------|-------------|-------|
 | **Keyword Search** | Exact symbols (`UserModel`, `calculate_tax`) | ~1ms |
 | **Semantic Search** | Concepts ("authentication logic", "error handling") | ~200-300ms |
-| **Auto-Pilot Mode** | Detects query type and optimizes automatically | Smart |
-
-## Use Cases
-* **Legacy Code Discovery**: Quickly find implementation patterns ("How do we handle OAuth?") in unfamiliar repositories you've inherited or just cloned.
-* **IDE Context Enhancement**: Provide real-time codebase context to MCP-compatible LLMs (Antigravity, Codex, etc.).
-* **Privacy-First Dev**: Use `provider="local"` for fully offline, air-gapped semantic search.
-* **Large-Scale Symbol Jump**: Instantly find exact matches (~1ms) across projects where `grep` is too slow or too "noisy."
-
-## Limitations
-
-* **Workspace Level**: Designed for individual project repositories. It is **not** a drive-wide desktop search engine.
-* **Memory Bound**: RAM usage scales linearly with the number of indexed chunks. High-end repositories (1M+ lines) may require significant memory.
+| **Hybrid Search** | Detects query type and optimizes automatically | Auto |
 
 ## Installation
 
@@ -78,7 +62,7 @@ On Windows, use double backslashes (`\\`) in the path, or forward slashes work t
 python -m orbis_search.server
 ```
 
-Note: If you configured the MCP server in your IDE (above), it will start automatically. You don't need to run this command manually.
+Note: If you configured the MCP server in your IDE (above), it will start automatically. You don't need to run these command manually.
 
 ### 2. Index Your Codebase
 
@@ -99,101 +83,58 @@ search_codebase("authentication logic")
 # Auto-pilot (detects best mode)
 search_codebase("calculate_tax")  # Auto-optimizes to keyword (~1ms)
 ```
-
-## Embedding Providers
-
-> **Default: Local Embeddings** - No API keys or costs required!
-
-| Provider | Cost | Latency (150 chunks) | Setup |
-|----------|------|---------------------|-------|
-| **local** (default) | **FREE** | 60-120s | `pip install -e ".[local]"` |
-| gemini | Free tier → paid | ~45s | Set `GEMINI_API_KEY` |
-| openai | Paid | ~45s | Set `OPENAI_API_KEY` |
-| keyword | **FREE** | ~0.2s | No embeddings |
-
-### Using Cloud Providers
-
-```bash
-# Set API key
-export GEMINI_API_KEY="your-key-here"  # Linux/Mac
-set GEMINI_API_KEY=your-key-here       # Windows
-
-# Index with Gemini
-index_codebase(provider="gemini")
-```
-
-### Cost Details
-
-- **Local**: FREE forever, ~400MB model downloads on first run
-- **Gemini**: Free tier (15 RPM), then $0.00025/1K tokens
-- **OpenAI**: $0.0001/1K tokens for `text-embedding-3-small`
-- **Keyword**: FREE, no embeddings (exact match only)
-
-## API Reference
-
-### `index_codebase(path=".", provider="local")`
-
-Index your codebase for search.
-
-**Parameters:**
-- `path`: Directory to index (default: current directory)
-- `provider`: `"local"` (default), `"gemini"`, `"openai"`, `"keyword"`, or `"auto"`
-
-**Returns:** Status message with chunk count
-
-### `search_codebase(query, top_k=5, keyword_only=False)`
-
-Search indexed codebase.
-
-**Parameters:**
-- `query`: Search query (symbol or concept)
-- `top_k`: Number of results to return
-- `keyword_only`: Force keyword-only search (faster)
-
-**Returns:** Formatted search results
-
-### `check_health()`
-
-Check server status and indexer state.
-
 ## Examples
 
 ### Example 1: Agent Orientation at Session Start
 
+**User:**  
+"I'm starting a new project. Can you help me understand the main entry point and overall structure?"
+
+**Agent:**  
+"Sure! I'll search for the main entry point, database models, and API routes to give you a full overview."
+
+*Agent internally performs:*
 ```python
-# Agent calls this at the start of a new session to orient itself
 search_codebase("entry point main application startup")
 search_codebase("database models schema")
 search_codebase("API routes endpoints")
 ```
 
-### Example 2: Symbol Lookup (Fast)
+---
 
+### Example 2: Quick Symbol Lookup
+
+**User:**  
+"Where is `HttpClient` used in the codebase?"
+
+**Agent:**  
+"I'll do a fast keyword search to find all instances of `HttpClient`."
+
+*Agent internally performs:*
 ```python
-# Auto-pilot detects symbol pattern → keyword search (~1ms)
-search_codebase("HttpClient")
+search_codebase("HttpClient", keyword_only=True)
 search_codebase("authenticate()")
 search_codebase("MAX_RETRIES")
 ```
 
+---
+
 ### Example 3: Conceptual Search
 
+**User:**  
+"How does the app handle database connections and errors?"
+
+**Agent:**  
+"I'll look for patterns related to connection pooling and error handling across the project."
+
+*Agent internally performs:*
 ```python
-# Semantic search finds related concepts
 search_codebase("database connection pooling")
 search_codebase("error handling patterns")
 search_codebase("user authentication flow")
 ```
 
-### Example 4: Mixed Workflow
-
-```python
-# 1. Quick symbol check
-search_codebase("UserModel", keyword_only=True)  # ~1ms
-
-# 2. Find related code
-search_codebase("user management logic")  # ~240ms, broader context
-```
+---
 
 ## Configuration
 
@@ -228,30 +169,11 @@ orbis_search/
 └── server.py         # MCP: Tools and auto-pilot logic
 ```
 
-**Key Components:**
-- `CodebaseIndexer` - File scanning, chunking, embedding generation
-- `HybridSearch` - Combines semantic + keyword scoring
-- `LocalEmbedding` - Default provider (sentence-transformers)
-- `GeminiEmbedding` / `OpenAIEmbedding` - Cloud providers
-
 ### Technical Constraints & Scaling
 
 * **In-Memory Retrieval**: The server loads the entire index (`index.bin`) into RAM. While keyword lookups are O(1), semantic searches are O(N) where N is the number of chunks.
 * **Lazy Content Loading**: To minimize footprint, Orbis-Search does **not** store full source code in the cache. It stores metadata and hashes, reading the actual file from disk only when a search result is generated.
 * **Binary Serialization**: Uses `pickle` for the index to ensure 10-50x faster load times compared to JSON.
-
-## Development
-
-```powershell
-# Install dev dependencies
-pip install -e ".[dev]"
-
-# Run tests
-pytest tests/ -v
-
-# Run specific test
-pytest tests/test_search_engine.py::TestHybridSearch -v
-```
 
 ## License
 
